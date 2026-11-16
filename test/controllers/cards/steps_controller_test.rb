@@ -109,4 +109,35 @@ class Cards::StepsControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
     assert_not Step.exists?(step.id)
   end
+
+  test "create nested under a parent with an assignee" do
+    card = cards(:logo)
+    parent = card.steps.create!(content: "Design:")
+
+    post card_steps_path(card), params: { step: { content: "Sketch", parent_id: parent.id, assignee_id: users(:kevin).id } }, as: :turbo_stream
+    assert_turbo_stream action: :before, target: dom_id(parent, :new_step)
+
+    step = card.steps.last
+    assert_equal parent, step.parent
+    assert_equal users(:kevin), step.assignee
+  end
+
+  test "assign on update and show it as JSON" do
+    card = cards(:logo)
+    step = card.steps.create!(content: "Sketch")
+
+    put card_step_path(card, step), params: { step: { assignee_id: users(:kevin).id } }, as: :json
+    assert_response :success
+    assert_equal users(:kevin).id, @response.parsed_body["assignee_id"]
+    assert_equal false, @response.parsed_body["section"]
+  end
+
+  test "edit offers the assignee and a place for sub-steps" do
+    card = cards(:logo)
+    step = card.steps.create!(content: "Sketch")
+
+    get edit_card_step_path(card, step)
+    assert_select "select[name='step[assignee_id]']"
+    assert_select "##{dom_id(step, :new_step)}"
+  end
 end

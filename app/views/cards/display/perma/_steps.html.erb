@@ -1,12 +1,13 @@
 <ol class="steps txt-small margin-block-start-auto">
-  <%= render partial: "cards/steps/step", collection: card.steps, as: :step %>
-
-  <% unless card.closed? %>
-    <li id="<%= dom_id(card, :new_step) %>" class="step">
-      <input type="checkbox" class="checkbox" disabled>
-      <%= form_with model: [card, Step.new], url: card_steps_path(card), class: "min-width", data: { controller: "form", action: "submit->form#preventEmptySubmit submit->form#preventComposingSubmit turbo:submit-end->form#reset" } do |form| %>
-        <%= form.text_field :content, class: "input step__content hide-focus-ring", placeholder: "Add a step…", autocomplete: "off", data: { form_target: "input", "1p-ignore": "true", action: "compositionstart->form#compositionStart compositionend->form#compositionEnd" }, aria: { label: "Add a step" } %>
-      <% end %>
-    </li>
-  <% end %>
+  <%= render partial: "cards/steps/step", collection: card.steps.roots, as: :step %>
+  <%= render "cards/steps/new", card: card, parent: nil unless card.closed? %>
 </ol>
+
+<% unless card.closed? %>
+  <details class="steps__templates txt-x-small">
+    <summary>Step templates</summary>
+    <%= turbo_frame_tag card, :templating, src: new_card_templating_path(card), loading: :lazy do %>
+      <span class="translucent">Loading…</span>
+    <% end %>
+  </details>
+<% end %>

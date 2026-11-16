@@ -4,6 +4,7 @@
       <%= form.check_box :completed, { class: "checkbox", checked: @step.completed?, disabled: true } %>
       <%= form.text_field :content, class: "input step__content step__content--edit hide-focus-ring", placeholder: "Name this step…", required: true, autofocus: true, autocomplete: "off",
           data: { action: "keydown.esc->form#cancel focus->form#select", "1p-ignore": "true" } %>
+      <%= form.collection_select :assignee_id, @board.users.active.alphabetically, :id, :name, { include_blank: "Unassigned" }, class: "input input--select txt-xx-small", aria: { label: "Assignee" } unless @step.section? %>
       <%= form.button type: "submit", class: "btn btn--positive txt-xx-small" do %>
         <%= icon_tag "check" %>
         <span class="for-screen-reader">Save changes</span>
@@ -15,4 +16,5 @@
       <span class="for-screen-reader">Delete this step</span>
     <% end %>
   </div>
+  <%= render "cards/steps/children", step: @step %>
 <% end %>

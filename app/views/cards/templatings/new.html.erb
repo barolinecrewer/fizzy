@@ -1,0 +1,13 @@
+<%= turbo_frame_tag @card, :templating do %>
+  <div class="flex flex-wrap align-center gap-half margin-block-half">
+    <% @step_templates.each do |step_template| %>
+      <%= button_to step_template.name, card_templatings_path(@card, step_template_id: step_template.id), class: "btn txt-xx-small", title: "Add this template’s steps to the card", form: { data: { turbo_frame: "_top" } } %>
+    <% end %>
+
+    <% if @card.steps.any? %>
+      <%= button_to "Save these steps as a template", step_templates_path(card_id: @card.number), class: "btn txt-xx-small", form: { data: { turbo_frame: "_top" } } %>
+    <% end %>
+
+    <%= link_to "Manage templates", step_templates_path, class: "txt-link", data: { turbo_frame: "_top" } %>
+  </div>
+<% end %>

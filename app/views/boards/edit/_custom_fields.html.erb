@@ -1,0 +1,27 @@
+<div class="margin-block-end">
+  <h2 class="divider txt-large">Custom fields</h2>
+  <p class="margin-none-block-start">Extra fields that appear on every card in this board.</p>
+
+  <ul class="flex flex-column gap-half margin-block-half unpad" style="list-style: none;">
+    <% board.custom_fields.alphabetically.each do |custom_field| %>
+      <li class="flex align-center justify-space-between gap-half">
+        <span><strong><%= custom_field.name %></strong> · <%= custom_field.kind %><%= ": #{custom_field.choices.to_sentence}" if custom_field.select? %></span>
+        <% if Current.user.can_administer_board?(board) %>
+          <%= button_to board_custom_field_path(board, custom_field), method: :delete, class: "btn btn--negative txt-xx-small", data: { turbo_confirm: "Remove this field and its values from every card?" } do %>
+            <%= icon_tag "trash" %>
+            <span class="for-screen-reader">Remove <%= custom_field.name %></span>
+          <% end %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+
+  <% if Current.user.can_administer_board?(board) %>
+    <%= form_with model: [ board, CustomField.new ], class: "flex flex-wrap align-center gap-half" do |form| %>
+      <%= form.text_field :name, required: true, class: "input", placeholder: "Field name…", autocomplete: "off", aria: { label: "Field name" } %>
+      <%= form.select :kind, CustomField::KINDS.map { [ it.capitalize, it ] }, {}, class: "input input--select", aria: { label: "Field type" } %>
+      <%= form.text_field :options, class: "input", placeholder: "Choices, comma-separated (select only)", autocomplete: "off", aria: { label: "Choices for a select field" } %>
+      <%= form.button "Add field", class: "btn" %>
+    <% end %>
+  <% end %>
+</div>

@@ -1,4 +1,15 @@
 module CardsHelper
+  def custom_field_input(form, field, value, **options)
+    options = { id: dom_id(field, :value), class: "input custom-field__value", data: { action: "change->form#submit" }, **options }
+
+    case field.kind
+    when "select" then form.select :value, field.choices, { include_blank: "—", selected: value }, options
+    when "number" then form.number_field :value, value: value, step: :any, **options
+    when "date"   then form.date_field :value, value: value, **options
+    else form.text_field :value, value: value, autocomplete: "off", **options
+    end
+  end
+
   def card_article_tag(card, id: dom_id(card, :article), data: {}, **options, &block)
     classes = [
       options.delete(:class),

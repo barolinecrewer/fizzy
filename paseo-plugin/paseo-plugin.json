@@ -1,0 +1,8 @@
+{
+  "id": "fizzy",
+  "name": "Fizzy",
+  "description": "View and work your Fizzy boards inside Paseo, and give agents Fizzy's MCP tools.",
+  "requirements": {
+    "paseo": ">=0.15.4"
+  }
+}

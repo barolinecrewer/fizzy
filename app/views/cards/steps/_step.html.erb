@@ -1,8 +1,14 @@
 <%= turbo_frame_tag step do %>
-  <li class="step">
-    <%= form_with model: [step.card, step], data: { controller: "form" } do |form| %>
-      <%= form.check_box :completed, { class: "checkbox", data: { action: "change->form#submit" } } %>
+  <li class="step <%= "step--section" if step.section? %>">
+    <% unless step.section? %>
+      <%= form_with model: [step.card, step], data: { controller: "form" } do |form| %>
+        <%= form.check_box :completed, { class: "checkbox", data: { action: "change->form#submit" } } %>
+      <% end %>
     <% end %>
     <%= link_to step.content, edit_card_step_path(step.card, step), class: "step__content" %>
+    <% if step.assignee %>
+      <span class="step__assignee"><%= step.assignee.name %></span>
+    <% end %>
   </li>
+  <%= render "cards/steps/children", step: step if step.section? || step.children.any? %>
 <% end %>
