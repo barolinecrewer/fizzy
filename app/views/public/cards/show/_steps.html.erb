@@ -1,8 +1,9 @@
-<ol class="steps txt-small margin-block">
-  <% card.steps.each do |step| %>
-    <li class="step">
-      <%= check_box_tag :completed, { class: "checkbox", disabled: true, checked: step.completed? } %>
+<ol class="steps <%= local_assigns[:steps] ? "steps--nested" : "txt-small margin-block" %>">
+  <% (local_assigns[:steps] || card.steps.roots).each do |step| %>
+    <li class="step <%= "step--section" if step.section? %>">
+      <%= check_box_tag :completed, { class: "checkbox", disabled: true, checked: step.completed? } unless step.section? %>
       <%= tag.span step.content, class: "step__content" %>
     </li>
+    <%= render "public/cards/show/steps", card: card, steps: step.children if step.children.any? %>
   <% end %>
 </ol>

@@ -30,7 +30,9 @@ class Account::DataTransfer::Manifest
           ::User::Settings,
           ::Tag,
           ::Board,
-          ::Column
+          ::Column,
+          ::CustomField,
+          ::StepTemplate
         ),
         Account::DataTransfer::EntropyRecordSet.new(account),
         record_set_for(::Board::Publication, unique_keys: %w[ key ]),
@@ -38,11 +40,13 @@ class Account::DataTransfer::Manifest
         # instance, not account data, so it stays behind. Its creator travels,
         # and is absent from exports made before webhooks recorded one.
         record_set_for(::Webhook, attributes: ::Webhook.column_names - %w[ created_via_id ], optional_attributes: %w[ creator_id ]),
+        # Nesting and assignees came after exports already existed.
+        record_set_for(::Step, optional_attributes: %w[ parent_id assignee_id ]),
         *record_sets_for(
           ::Access,
           ::Card,
           ::Comment,
-          ::Step,
+          ::CustomFieldValue,
           ::Assignment,
           ::Tagging,
           ::Closure,

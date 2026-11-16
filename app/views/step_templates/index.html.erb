@@ -1,0 +1,25 @@
+<% @page_title = "Step Templates" %>
+
+<% content_for :header do %>
+  <h1 class="header__title" data-bridge--title-target="header"><%= @page_title %></h1>
+<% end %>
+
+<div class="settings margin-block-start-half">
+  <div class="settings__panel panel shadow center">
+    <p class="margin-none-block-start">One step per line. Indent two spaces to nest a step under the one above, and end a line with a colon to make it a section. Apply a template from any card.</p>
+
+    <% [ *@step_templates, StepTemplate.new ].each do |step_template| %>
+      <section class="settings__section margin-block-end">
+        <%= form_with model: step_template, class: "flex flex-column gap-half" do |form| %>
+          <%= form.text_field :name, required: true, class: "input full-width", placeholder: "New template name…", autocomplete: "off", aria: { label: "Template name" } %>
+          <%= form.text_area :outline, required: true, rows: 6, class: "input full-width", style: "font-family: var(--font-mono, monospace);", placeholder: "Design:\n  Sketch\n  Review\nShip it", aria: { label: "Steps" } %>
+          <%= form.button step_template.persisted? ? "Save changes" : "Create template", class: "btn" %>
+        <% end %>
+
+        <% if step_template.persisted? %>
+          <%= button_to "Delete", step_template, method: :delete, class: "btn btn--negative txt-x-small margin-block-start-half", data: { turbo_confirm: "Delete this template? Cards that used it keep their steps." } %>
+        <% end %>
+      </section>
+    <% end %>
+  </div>
+</div>

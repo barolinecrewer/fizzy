@@ -53,6 +53,7 @@ Rails.application.routes.draw do
       resource :involvement
       resource :publication
       resource :entropy
+      resources :custom_fields, only: %i[ index create destroy ]
 
       namespace :columns do
         resource :not_now
@@ -120,6 +121,8 @@ Rails.application.routes.draw do
       resources :assignments
       resource :self_assignment, only: :create
       resources :steps
+      resources :fields, only: :update
+      resources :templatings, only: %i[ new create ]
       resources :taggings
 
       resources :comments do
@@ -129,6 +132,11 @@ Rails.application.routes.draw do
   end
 
   resources :tags, only: :index
+  resources :step_templates, only: %i[ index create update destroy ]
+
+  # The MCP server (Streamable HTTP, stateless). Clients send a two-type Accept
+  # header, so the format is pinned here for bearer authentication to apply.
+  post "mcp", to: "mcp#create", defaults: { format: :json }
 
   namespace :notifications do
     resource :settings

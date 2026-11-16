@@ -1,0 +1,10 @@
+<% if (fields = card.custom_fields).any? %>
+  <div class="custom-fields txt-small">
+    <% fields.each do |field, value| %>
+      <%= form_with url: card_field_path(card, field), method: :put, class: "custom-field", data: { controller: "form" } do |form| %>
+        <%= form.label :value, field.name, for: dom_id(field, :value), class: "custom-field__name" %>
+        <%= custom_field_input form, field, value, disabled: card.closed? %>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

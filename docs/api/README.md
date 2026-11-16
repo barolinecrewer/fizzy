@@ -13,6 +13,7 @@ a bot to perform various actions for you.
 - [Cards](sections/cards.md)
 - [Pins](sections/pins.md)
 - [Steps](sections/steps.md)
+- [Custom fields](sections/custom_fields.md)
 - [Comments](sections/comments.md)
 - [Reactions](sections/reactions.md)
 - [Tags](sections/tags.md)

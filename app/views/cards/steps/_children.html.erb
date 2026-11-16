@@ -1,0 +1,4 @@
+<ol class="steps steps--nested">
+  <%= render partial: "cards/steps/step", collection: step.children, as: :step %>
+  <%= render "cards/steps/new", card: step.card, parent: step unless step.card.closed? %>
+</ol>

@@ -13,6 +13,7 @@ AllCops:
     - 'db/schema*.rb'
     - 'saas/db/migrate/**/*'
     - 'saas/db/saas_schema.rb'
+    - 'paseo-plugin/**/*'
 
 Style/NegatedIf:
   Enabled: true

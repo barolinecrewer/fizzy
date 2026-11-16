@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_10_19_150000) do
+ActiveRecord::Schema[8.2].define(version: 2026_11_16_120000) do
   create_table "accesses", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -281,6 +281,30 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_19_150000) do
     t.uuid "filter_id", null: false
     t.index ["creator_id"], name: "index_creators_filters_on_creator_id"
     t.index ["filter_id"], name: "index_creators_filters_on_filter_id"
+  end
+
+  create_table "custom_field_values", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "card_id", null: false
+    t.datetime "created_at", null: false
+    t.uuid "custom_field_id", null: false
+    t.datetime "updated_at", null: false
+    t.string "value", null: false
+    t.index ["account_id"], name: "index_custom_field_values_on_account_id"
+    t.index ["card_id", "custom_field_id"], name: "index_custom_field_values_on_card_id_and_custom_field_id", unique: true
+    t.index ["custom_field_id"], name: "index_custom_field_values_on_custom_field_id"
+  end
+
+  create_table "custom_fields", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "board_id", null: false
+    t.datetime "created_at", null: false
+    t.string "kind", default: "text", null: false
+    t.string "name", null: false
+    t.string "options"
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_custom_fields_on_account_id"
+    t.index ["board_id"], name: "index_custom_fields_on_board_id"
   end
 
   create_table "entropies", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -783,16 +807,29 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_19_150000) do
     t.index ["identity_id"], name: "index_sessions_on_identity_id"
   end
 
+  create_table "step_templates", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.text "outline", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_step_templates_on_account_id"
+  end
+
   create_table "steps", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.uuid "account_id", null: false
+    t.uuid "assignee_id"
     t.uuid "card_id", null: false
     t.boolean "completed", default: false, null: false
     t.text "content", null: false
     t.datetime "created_at", null: false
+    t.uuid "parent_id"
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_steps_on_account_id"
+    t.index ["assignee_id"], name: "index_steps_on_assignee_id"
     t.index ["card_id", "completed"], name: "index_steps_on_card_id_and_completed"
     t.index ["card_id"], name: "index_steps_on_card_id"
+    t.index ["parent_id"], name: "index_steps_on_parent_id"
   end
 
   create_table "storage_entries", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
